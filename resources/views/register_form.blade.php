@@ -28,7 +28,7 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <input type="text" class="form-control form-control-lg"/>
+                                <input type="text" id="nome" name="nome" class="form-control form-control-lg"/>
 
                             </div>
                         </div>
@@ -43,7 +43,7 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <input type="text" class="form-control form-control-lg"/>
+                                <input type="text" id="cognome" name="cognome" class="form-control form-control-lg"/>
 
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <input type="email" class="form-control form-control-lg"
+                                <input type="email" id="email" name="email" class="form-control form-control-lg"
                                        placeholder="example@example.com"/>
 
                             </div>
@@ -74,7 +74,7 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <input type="email" class="form-control form-control-lg"
+                                <input type="email" id="email-repited" name="emial-repited" class="form-control form-control-lg"
                                        placeholder="example@example.com"/>
 
                             </div>
@@ -90,7 +90,7 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <input class="form-control form-control-lg" id="formFileLg" type="file"/>
+                                <input class="form-control form-control-lg" id="file" name="file" type="file"/>
                                 <div class="small text-muted mt-2">
                                     Sono ammessi pdf,jpeg,png
                                 </div>
@@ -108,7 +108,7 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <input type="number" class="form-control form-control-lg"
+                                <input type="number" id="telefono" name="telefono" class="form-control form-control-lg"
                                        placeholder="333333333333"/>
 
                             </div>
@@ -214,4 +214,29 @@
     </div>
 </section>
 </body>
+<script>
+    function submitData() {
+        const formObject = new FormData();
+
+        // append all data
+        formObject.append('nome', document.getElementById('nome').value);
+        formObject.append('cognome', document.getElementById('cognome').value);
+        formObject.append('email', document.getElementById('email').value);
+        formObject.append('email-repited', document.getElementById('email-repited').value);
+        formObject.append('telefono', document.getElementById('telefono').value);
+
+
+
+        const xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                alert("Dati inviati con successo");
+            } else {
+                alert("Errore nell'invio dei dati");
+            }
+        };
+        xmlhttp.open("POST", "/api/register-candidature", true);
+        xmlhttp.send(formObject);
+    }
+</script>
 </html>
