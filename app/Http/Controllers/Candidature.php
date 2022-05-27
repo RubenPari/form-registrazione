@@ -13,6 +13,7 @@ class Candidature extends Controller
      */
     public function register($data): bool
     {
-        return $data;
+        echo $data;
+        return true;
     }
 }
