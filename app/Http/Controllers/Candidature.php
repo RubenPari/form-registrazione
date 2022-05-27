@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 
 class Candidature extends Controller
 {
@@ -13,7 +13,7 @@ class Candidature extends Controller
      */
     public function register($data): bool
     {
-        echo $data;
+        print_r($data);
         return true;
     }
 }

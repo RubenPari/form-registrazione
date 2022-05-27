@@ -314,9 +314,12 @@
         formObject.append('regione-desiderata', document.getElementById('regione-desiderata').value);
         formObject.append('informazioni-utili', document.getElementById('informazioni-utili').value);
 
-        const isValid = validateData(formObject);
+        // TODO: fix
+        console.log(formObject);
 
-        if (isValid) {
+         //const isValid = validateData(formObject);
+        let isValid = true;
+        if (isValid === true) {
             const xmlhttp = new XMLHttpRequest();
 
             xmlhttp.open("POST", "/api/register-candidature", true);
