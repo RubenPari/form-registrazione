@@ -74,7 +74,8 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <input type="email" id="email-repited" name="emial-repited" class="form-control form-control-lg"
+                                <input type="email" id="email-repited" name="email-repited"
+                                       class="form-control form-control-lg"
                                        placeholder="example@example.com"/>
 
                             </div>
@@ -124,7 +125,7 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <select name="regione" id="regione" multiple>
+                                <select name="regione" id="regione-residenza" multiple>
                                     <option value="valle-daosta">Valle D'Aosta</option>
                                     <option value="piemonte">Piemonte</option>
                                     <option value="liguria">Liguria</option>
@@ -160,7 +161,7 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <select name="regione" id="regione" multiple>
+                                <select name="regione-desiderata" id="regione-desiderata" multiple>
                                     <option value="valle-daosta">Valle D'Aosta</option>
                                     <option value="piemonte">Piemonte</option>
                                     <option value="liguria">Liguria</option>
@@ -196,14 +197,15 @@
                             </div>
                             <div class="col-md-9 pe-5">
 
-                                <input type="text" maxlength="200" class="form-control form-control-lg"
+                                <input type="text" id="informazioni-utili" name="informazioni-utili" maxlength="200"
+                                       class="form-control form-control-lg"
                                        placeholder="Informazioni utili (max 200 caratteri)"/>
 
                             </div>
                         </div>
 
                         <div class="px-5 py-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Invia</button>
+                            <button type="submit" class="btn btn-primary btn-lg" onclick="submitData()">Invia</button>
                         </div>
 
                     </div>
@@ -215,6 +217,89 @@
 </section>
 </body>
 <script>
+    function validateData(formObject) {
+        let valid = true;
+
+        // check if every value is not empty
+        if ((formObject.get("nome").value === ""
+                ||
+                formObject.get("nome").value == null)
+            ||
+            (formObject.get("cognome").value === ""
+                ||
+                formObject.get("cognome").value == null)
+            ||
+            (formObject.get("email").value === ""
+                ||
+                formObject.get("email").value == null)
+            ||
+            (formObject.get("email-repited").value === ""
+                ||
+                formObject.get("email-repited").value == null)
+            ||
+            (formObject.get("file").value === null)
+            ||
+            (formObject.get("telefono").value === ""
+                ||
+                formObject.get("telefono").value == null)
+            ||
+            (formObject.get("regione-residenza").value === ""
+                ||
+                formObject.get("regione-residenza").value == null)
+            ||
+            (formObject.get("regione-desiderata").value === ""
+                ||
+                formObject.get("regione-desiderata").value == null)
+            ||
+            (formObject.get("informazioni-utili").value === ""
+                ||
+                formObject.get("informazioni-utili").value == null)) {
+            alert("Compila tutti i campi");
+            valid = false;
+        }
+
+        // check if email is valid
+        let emailSplitName = formObject.get("email").value.split("@");
+        let emailSplitDomain = emailSplitName[1].split(".");
+        if (emailSplitName.length !== 2
+            ||
+            emailSplitDomain.length !== 2) {
+            alert("Inserisci una email valida");
+            valid = false;
+
+        }
+
+        // check if email repeated is equal to email
+        if (formObject.get("email").value !== formObject.get("email-repited").value) {
+            alert("Le email non corrispondono");
+            valid = false;
+        }
+
+        //check if file extension is valid
+        let file = formObject.get("file").value;
+        let fileSplit = file.split(".");
+        if (fileSplit.length !== 2) {
+            alert("Inserisci un file valido");
+            valid = false;
+        } else {
+            let extension = fileSplit[1];
+            if (extension !== "pdf" && extension !== "doc" && extension !== "docx") {
+                alert("Inserisci un file valido");
+                valid = false;
+            }
+        }
+
+        // check if phone number is valid
+        let phoneNumber = formObject.get("telefono").value;
+        if (phoneNumber.length !== 10) {
+            alert("Inserisci un numero di telefono valido");
+            valid = false;
+        }
+
+        return valid;
+
+    }
+
     function submitData() {
         const formObject = new FormData();
 
@@ -223,20 +308,29 @@
         formObject.append('cognome', document.getElementById('cognome').value);
         formObject.append('email', document.getElementById('email').value);
         formObject.append('email-repited', document.getElementById('email-repited').value);
+        formObject.append('file', document.getElementById('file').files[0]);
         formObject.append('telefono', document.getElementById('telefono').value);
+        formObject.append('regione-residenza', document.getElementById('regione-residenza').value);
+        formObject.append('regione-desiderata', document.getElementById('regione-desiderata').value);
+        formObject.append('informazioni-utili', document.getElementById('informazioni-utili').value);
 
+        const isValid = validateData(formObject);
 
+        if (isValid) {
+            const xmlhttp = new XMLHttpRequest();
 
-        const xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (this.readyState === 4 && this.status === 200) {
-                alert("Dati inviati con successo");
-            } else {
-                alert("Errore nell'invio dei dati");
-            }
-        };
-        xmlhttp.open("POST", "/api/register-candidature", true);
-        xmlhttp.send(formObject);
+            xmlhttp.open("POST", "/api/register-candidature", true);
+
+            xmlhttp.send(formObject);
+
+            xmlhttp.onload = function () {
+                if (this.status === 200) {
+                    alert("Dati inviati con successo");
+                } else {
+                    alert("Errore nell'invio dei dati");
+                }
+            };
+        }
     }
 </script>
 </html>
